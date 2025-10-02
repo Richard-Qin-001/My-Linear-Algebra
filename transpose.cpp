@@ -30,19 +30,17 @@
 // // }
 
 // transpose.cpp
-#include "matrix_options_base.h"
-#include <vector>
+# include "matrix_options_base.h"
+# include <vector>
 
 using namespace std;
 
-vector<vector<double>> matrix_transpose(
-    const vector<vector<double>>& matrix, 
-    int n, int m)
-{
+vector<vector<double>> matrix_transpose(const vector<vector<double>>& matrix){
+    size_t n = matrix.size(), m = matrix[0].size();
     vector<vector<double>> transposed_matrix(m, vector<double>(n));
     
-    for (int i = 0; i < n; i++){ 
-        for (int j = 0; j < m; j++){ 
+    for (size_t i = 0; i < n; i++){ 
+        for (size_t j = 0; j < m; j++){ 
             transposed_matrix[j][i] = matrix[i][j];
         }
     }

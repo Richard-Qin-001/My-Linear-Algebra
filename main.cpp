@@ -15,7 +15,7 @@ void clear_input() {
 }
 
 void handle_multiply() {
-    int n, m, p;
+    size_t n, m, p;
     cout << "\n--- 矩阵乘法 (A * B) ---\n";
     cout << "请输入第一个矩阵 (A) 的维度 (n m): ";
     if (!(cin >> n >> m)) { clear_input(); return; }
@@ -30,14 +30,14 @@ void handle_multiply() {
     vector<vector<double>> m_2 = input_matrix(m, p);
     if (m_2.empty()) { cout << "输入错误或中断。\n"; return; }
 
-    vector<vector<double>> result = matrix_multiply(m_1, m_2, n, m, p);
+    vector<vector<double>> result = matrix_multiply(m_1, m_2);
     
     cout << "\n结果矩阵 (A * B):\n";
-    print_matrix(n, p, result);
+    print_matrix(result);
 }
 
 void handle_transpose() {
-    int n, m;
+    size_t n, m;
     cout << "\n--- 矩阵转置 (A^T) ---\n";
     cout << "请输入矩阵的维度 (n m): ";
     if (!(cin >> n >> m)) { clear_input(); return; }
@@ -46,14 +46,14 @@ void handle_transpose() {
     vector<vector<double>> matrix = input_matrix(n, m);
     if (matrix.empty()) { cout << "输入错误或中断。\n"; return; }
 
-    vector<vector<double>> transposed = matrix_transpose(matrix, n, m);
+    vector<vector<double>> transposed = matrix_transpose(matrix);
 
     cout << "\n转置结果 (" << m << "x" << n << "):\n";
-    print_matrix(m, n, transposed);
+    print_matrix(transposed);
 }
 
 void handle_elimination() {
-    int n, m;
+    size_t n, m;
     cout << "\n--- 高斯消元 ---\n";
     cout << "请输入矩阵的维度 (n m): ";
     if (!(cin >> n >> m)) { clear_input(); return; }
@@ -65,30 +65,44 @@ void handle_elimination() {
     // 这里使用临时副本，因为 Elimination 是原地修改
     vector<vector<double>> working_matrix = matrix; 
 
-    Elimination(n, m, working_matrix);
+    Gauss_Elimination(working_matrix);
 
     cout << "\n高斯消元结果 (行阶梯形):\n";
-    print_matrix(n, m, working_matrix);
+    print_matrix(working_matrix);
 }
 
-void handle_determinant1(){
-    int n = 0;
+void handle_determinant_leibniz(){
+    size_t n = 0;
+    cout << "\n--- 行列式计算-莱布尼茨方法 ---\n";
     cout << "请输入方阵的行数或列数 (n): ";
     if (!(cin >> n)) { clear_input(); return; }
     cout << "请输入方阵(" << n << "x" << n << "):" << endl;
     vector<vector<double>> matrix = input_matrix(n,n);
     if (matrix.empty()) { cout << "输入错误或中断。\n"; return; }
     double determinant;
-    determinant = calculate_determinant(matrix);
-    cout << "行列式计算结果：" << determinant << endl;
+    determinant = calculate_determinant_leibniz(matrix);
+    cout << "行列式计算结果：\n" << determinant << endl;
+}
+
+void handle_determinant_gauss(){
+    size_t n = 0;
+    cout << "\n--- 行列式计算-高斯消元方法 ---\n";
+    cout << "请输入方阵的行数或列数 (n): ";
+    if (!(cin >> n)) { clear_input(); return; }
+    cout << "请输入方阵(" << n << "x" << n << "):" << endl;
+    vector<vector<double>> matrix = input_matrix(n,n);
+    if (matrix.empty()) { cout << "输入错误或中断。\n"; return; }
+    double determinant;
+    determinant = calculate_determinant_gauss(matrix);
+    cout << "行列式计算结果：\n" << determinant << endl;
 }
 
 int main() {
     SetConsoleOutputCP(65001); // 设置输出编码为 UTF-8
     SetConsoleCP(65001);       // 设置输入编码为 UTF-8
-    locale::global(locale(""));
-    wcout.imbue(locale());
-    wcin.imbue(locale());
+    std::locale::global(std::locale(""));
+    wcout.imbue(std::locale());
+    wcin.imbue(std::locale());
 
     int choice;
     do {
@@ -99,6 +113,7 @@ int main() {
         cout << "2. 矩阵转置 (A^T)\n";
         cout << "3. 高斯消元 (Gauss Elimination)\n";
         cout << "4. 行列式计算-莱布尼茨方法(Determination Calculation - Leibniz)\n";
+        cout << "5. 行列式计算-高斯消元方法(Determination Calculation - Gauss)\n";
         cout << "0. 退出\n";
         cout << "请选择功能编号: ";
         
@@ -119,7 +134,11 @@ int main() {
                 handle_elimination();
                 break;
             case 4:
-                handle_determinant1();
+                handle_determinant_leibniz();
+                break;
+            case 5:
+                handle_determinant_gauss();
+                break;
             case 0:
                 cout << "程序退出。\n";
                 break;

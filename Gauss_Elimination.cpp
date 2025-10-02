@@ -1,4 +1,3 @@
-# include <iostream>
 # include <vector>
 # include <cmath>
 
@@ -20,10 +19,13 @@ using namespace std;
 
 // }
 
-void Elimination(int n, int m, vector<vector<double>>& matrix){
+void Gauss_Elimination(vector<vector<double>>& matrix){
     // vector<double> line_1(m);
     // vector<double> line_e(m);
+    long long n = matrix.size();
+    long long m = matrix[0].size();
     int steps = min(m, n);
+    // int count_permutations = 0;
     for (int i = 0; i < steps; i++){
         int privot_row = i;
         double max_val = abs(matrix[i][i]);
@@ -36,7 +38,7 @@ void Elimination(int n, int m, vector<vector<double>>& matrix){
         }
 
         if (privot_row != i){
-                Permutation(i, privot_row, n, m, matrix);
+                Permutation(i, privot_row, matrix);
         }
         
 
@@ -68,19 +70,44 @@ void Elimination(int n, int m, vector<vector<double>>& matrix){
             }
         }
     }
-    // return matrix;
 }
 
-// int main(){
-//     int n, m;
-//     cout << "Input the number of rows and columns:";
-//     cin >> n >> m;
-//     vector<vector<double>> matrix(n, vector<double>(m));
-//     cout << "Input your matrix:" << endl;
-//     matrix = input_matrix(n, m);
-//     Elimination(n, m, matrix);
-//     cout << "Gauss Elimination result:" << endl;
-//     output_matrix(n, m, matrix);
-//     return 0;
 
-// }
+int gauss_forward_elimination(vector<vector<double>>& matrix) {
+    long long n = matrix.size();
+    long long m = matrix[0].size();
+    int steps = min(m, n);
+    int swap_count = 0;
+
+    for (int i = 0; i < steps; i++){
+        int privot_row = i;
+        double max_val = abs(matrix[i][i]);
+
+        for (int k = i + 1; k < n; k++){
+            if (abs(matrix[k][i]) > max_val){
+                max_val = abs(matrix[k][i]);
+                privot_row = k;
+            }
+        }
+
+        if (privot_row != i){
+            Permutation(i, privot_row, matrix);
+            swap_count++; 
+        }
+        
+
+        if (abs(matrix[i][i]) < 1e-9) {
+            continue;
+        }
+
+        for (int j = i + 1; j < n; j++){ 
+            double multiplier = matrix[j][i] / matrix[i][i];
+            
+            for (int k = i; k < m; k++){ 
+                matrix[j][k] = matrix[j][k] - multiplier * matrix[i][k];
+            }
+        }
+    }
+    return (swap_count % 2 == 0) ? 1 : -1;
+}
+
