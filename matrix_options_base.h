@@ -27,4 +27,7 @@ std::vector<std::vector<double>> matrix_transpose(
     const std::vector<std::vector<double>>& matrix, 
     int n, int m);
 
+// Determinant Calculation
+double calculate_determinant(const std::vector<std::vector<double>>& matrix);
+
 #endif

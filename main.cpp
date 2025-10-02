@@ -4,8 +4,6 @@
 #include <locale>
 #include <windows.h>
 
-
-
 using namespace std;
 
 // 辅助函数：处理输入失败，避免程序崩溃
@@ -73,6 +71,18 @@ void handle_elimination() {
     print_matrix(n, m, working_matrix);
 }
 
+void handle_determinant1(){
+    int n = 0;
+    cout << "请输入方阵的行数或列数 (n): ";
+    if (!(cin >> n)) { clear_input(); return; }
+    cout << "请输入方阵(" << n << "x" << n << "):" << endl;
+    vector<vector<double>> matrix = input_matrix(n,n);
+    if (matrix.empty()) { cout << "输入错误或中断。\n"; return; }
+    double determinant;
+    determinant = calculate_determinant(matrix);
+    cout << "行列式计算结果：" << determinant << endl;
+}
+
 int main() {
     SetConsoleOutputCP(65001); // 设置输出编码为 UTF-8
     SetConsoleCP(65001);       // 设置输入编码为 UTF-8
@@ -88,6 +98,7 @@ int main() {
         cout << "1. 矩阵乘法 (A * B)\n";
         cout << "2. 矩阵转置 (A^T)\n";
         cout << "3. 高斯消元 (Gauss Elimination)\n";
+        cout << "4. 行列式计算-莱布尼茨方法(Determination Calculation - Leibniz)\n";
         cout << "0. 退出\n";
         cout << "请选择功能编号: ";
         
@@ -107,6 +118,8 @@ int main() {
             case 3:
                 handle_elimination();
                 break;
+            case 4:
+                handle_determinant1();
             case 0:
                 cout << "程序退出。\n";
                 break;
