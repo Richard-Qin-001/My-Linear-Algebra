@@ -8,7 +8,7 @@ CXXFLAGS    = -Wall -std=c++11 -O2
 TARGET      = matrix_app
 BUILD_DIR   = build
 BIN_DIR     = bin
-SRC_FILES   = io_matrix.cpp elimination.cpp permutation.cpp transpose.cpp multiply.cpp main.cpp determinant-Leibniz.cpp determinant-Gauss.cpp lu_decomposition.cpp inverse.cpp identity.cpp
+SRC_FILES   = io_matrix.cpp io_matrix_json.cpp elimination.cpp permutation.cpp transpose.cpp multiply.cpp main.cpp determinant-Leibniz.cpp determinant-Gauss.cpp lu_decomposition.cpp inverse.cpp identity.cpp
 OBJ_FILES   = $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(SRC_FILES))
 # Headers are in the current directory, so no need for -I
 # ----------------------------------------------------------------------

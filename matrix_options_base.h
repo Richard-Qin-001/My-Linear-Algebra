@@ -3,11 +3,15 @@
 
 # include <iostream>
 # include <vector>
+# include <string>
 
 
 // --- I/O 接口 ---
 std::vector<std::vector<double>> input_matrix(size_t n, size_t m);
 void print_matrix(const std::vector<std::vector<double>>& matrix);
+
+// --- I/O - JSON 接口 ---
+std::vector<std::vector<double>> read_matrix_from_json(const std::string& filepath);
 
 // --- 核心操作接口 ---
 // Permutation (用于行交换)
