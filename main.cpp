@@ -2,7 +2,11 @@
 # include <iostream>
 # include <vector>
 # include <locale>
-# include <windows.h>
+# include <clocale>
+# include <limits>
+#ifdef _WIN32 // 仅在 Windows 系统上编译
+#include <windows.h>
+#endif
 # include <fstream>
 # include "json.hpp"
 
@@ -23,7 +27,7 @@ LoadedMatrices g_loaded_data; // 定义全局变量
 void clear_input() {
     if (cin.fail()) {
         cin.clear();
-        cin.ignore(10000, '\n');
+        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     }
 }
 
@@ -366,8 +370,11 @@ void handle_lu_decomposition(){
 }
 
 int main() {
+    setlocale(LC_ALL, "");
+    #ifdef _WIN32
     SetConsoleOutputCP(65001); // 设置输出编码为 UTF-8
     SetConsoleCP(65001);       // 设置输入编码为 UTF-8
+    #endif
     std::locale::global(std::locale(""));
     wcout.imbue(std::locale());
     wcin.imbue(std::locale());
