@@ -22,26 +22,32 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 
+include_directories(
+    ${CMAKE_CURRENT_SOURCE_DIR}/src
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources
+    ${CMAKE_CURRENT_BINARY_DIR}  # 添加构建目录，UI 头文件会生成在这里
+)
+
 # 5. 定义源代码文件列表 (包括您的核心逻辑和新的 Qt 文件)
 
 # UI 和 Qt 文件 (将被自动处理)
-set(UI_FORMS MyLinearAlgebra.ui)
-set(GUI_SOURCES mainwindow.h mainwindow.cpp)
+set(UI_FORMS ${CMAKE_CURRENT_SOURCE_DIR}/src/MyLinearAlgebra.ui)
+set(GUI_SOURCES src/mainwindow.h src/mainwindow.cpp)
 
 # 核心 C++ 文件
 set(CORE_SOURCES
-    main.cpp
-    io_matrix.cpp
-    io_matrix_json.cpp
-    elimination.cpp
-    permutation.cpp
-    transpose.cpp
-    multiply.cpp
-    determinant-Leibniz.cpp
-    determinant-Gauss.cpp
-    lu_decomposition.cpp
-    inverse.cpp
-    identity.cpp
+    src/main.cpp
+    src/io_matrix.cpp
+    src/io_matrix_json.cpp
+    src/elimination.cpp
+    src/permutation.cpp
+    src/transpose.cpp
+    src/multiply.cpp
+    src/determinant-Leibniz.cpp
+    src/determinant-Gauss.cpp
+    src/lu_decomposition.cpp
+    src/inverse.cpp
+    src/identity.cpp
     # 确保所有的 .cpp 文件都在这里
 )
 
@@ -54,6 +60,7 @@ qt_add_executable(MyLinearAlgebraApp
 
 # 7. 链接所需的 Qt 模块
 target_link_libraries(MyLinearAlgebraApp PRIVATE
+    Qt::Core
     Qt::Widgets
 )
 
