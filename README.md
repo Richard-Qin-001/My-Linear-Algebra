@@ -40,6 +40,18 @@ The project has evolved from a simple console application to a fully-featured GU
 - **CMake 3.16** or higher
 - **C++17** compatible compiler
 
+### Launch Modes
+This application supports two launch modes:
+
+- **CLI Mode (Default)**: Command-line interface for quick calculations
+- **GUI Mode**: Graphical user interface with full feature set
+
+**By default, the application starts in CLI mode.** To launch the GUI version, use one of these command-line arguments:
+```bash
+./MyLinearAlgebraApp gui    # Full word argument
+./MyLinearAlgebraApp -g     # Short flag argument
+```
+
 ### Building Steps
 
 #### Method 1: Using CMake (Recommended)
@@ -59,7 +71,9 @@ make -j4
 
 # Run application
 cd ../bin
-./MyLinearAlgebraApp
+./MyLinearAlgebraApp # CLI mode
+./MyLinearAlgebraApp gui # GUI mode
+./MyLinearAlgebraApp -g # GUI mode
 ```
 
 #### Method 2: Using VSCode
@@ -72,7 +86,8 @@ cd ../bin
 For Windows users, we provide pre-compiled executables:
 1. Download the latest release
 2. Extract to any directory
-3. Run `MyLinearAlgebraApp.exe`
+3. **Default**: Run `MyLinearAlgebraApp.exe` for CLI mode
+4. **GUI Mode**: Run `MyLinearAlgebraApp.exe gui` or `MyLinearAlgebraApp.exe -g` for graphical interface
 
 ## 📖 User Guide
 
