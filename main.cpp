@@ -1,4 +1,6 @@
 # include "matrix_options_base.h"
+# include <QApplication>
+# include "mainwindow.h"
 # include <iostream>
 # include <vector>
 # include <locale>
@@ -9,18 +11,21 @@
 #endif
 # include <fstream>
 # include "json.hpp"
+# include "loaded_matrix.h"
 
 using namespace std;
 using json = nlohmann::json;
 
-// --- 新增：全局存储结构 ---
-// 用于存储从 JSON 加载的矩阵数据，方便后续功能直接调用。
-struct LoadedMatrices {
-    vector<vector<double>> A;
-    vector<vector<double>> B;
-    bool is_A_loaded = false;
-    bool is_B_loaded = false;
-};
+// 为了解决C++错误--不允许使用不完整的类类型，我单独定义了一个新的头文件，方便在main.cpp和mainwindow.cpp中调用
+// 防止重复定义，注释原始内容，暂不删除。
+// // --- 全局存储结构 ---
+// // 用于存储从 JSON 加载的矩阵数据，方便后续功能直接调用。
+// struct LoadedMatrices {
+//     vector<vector<double>> A;
+//     vector<vector<double>> B;
+//     bool is_A_loaded = false;
+//     bool is_B_loaded = false;
+// };
 
 LoadedMatrices g_loaded_data; // 定义全局变量
 
@@ -57,7 +62,7 @@ void handle_load_matrix_from_json() {
         g_loaded_data.A = std::move(matrix);
         g_loaded_data.is_A_loaded = true;
         cout << "矩阵 A 已从 JSON 文件加载并存储。\n";
-    } else { // choice == 2
+    } else {
         g_loaded_data.B = std::move(matrix);
         g_loaded_data.is_B_loaded = true;
         cout << "矩阵 B 已从 JSON 文件加载并存储。\n";
@@ -124,7 +129,6 @@ void handle_transpose() {
     cout << "\n--- 矩阵转置 (A^T) ---\n";
     vector<vector<double>> matrix;
     size_t n, m;
-    // --- 矩阵 A/Matrix 输入逻辑 ---
     if (g_loaded_data.is_A_loaded) {
         char use_loaded;
         cout << "是否使用已加载的矩阵 A (" << g_loaded_data.A.size() << "x" << g_loaded_data.A[0].size() << ")? (y/n): ";
@@ -135,7 +139,7 @@ void handle_transpose() {
         }
     }
 
-    if (matrix.empty()) { // 如果没有使用已加载数据，则进行手动输入
+    if (matrix.empty()) {
         cout << "请输入矩阵的维度 (n m): ";
         if (!(cin >> n >> m)) { clear_input(); return; }
         cout << "请输入矩阵 (" << n << "x" << m << "):" << endl;
@@ -257,7 +261,6 @@ void handle_determinant_leibniz(){
     cout << "\n--- 行列式计算-莱布尼茨方法 ---\n";
     vector<vector<double>> matrix;
     
-    // --- 新增：JSON 数据选择逻辑 ---
     if (g_loaded_data.is_A_loaded && g_loaded_data.A.size() == g_loaded_data.A[0].size()) {
         char use_loaded;
         cout << "是否使用已加载的方阵 A (" << g_loaded_data.A.size() << "x" << g_loaded_data.A.size() << ")? (y/n): ";
@@ -268,7 +271,7 @@ void handle_determinant_leibniz(){
         }
     }
     
-    if (matrix.empty()) { // 仍需手动输入
+    if (matrix.empty()) {
         cout << "请输入矩阵的行数或列数 (n): ";
         if (!(cin >> n)) { clear_input(); return; }
         cout << "请输入矩阵 (" << n << "x" << n << "):" << endl;
@@ -290,7 +293,6 @@ void handle_determinant_gauss(){
     cout << "\n--- 行列式计算-高斯消元方法 ---\n";
     vector<vector<double>> matrix;
     
-    // --- 新增：JSON 数据选择逻辑 ---
     if (g_loaded_data.is_A_loaded && g_loaded_data.A.size() == g_loaded_data.A[0].size()) {
         char use_loaded;
         cout << "是否使用已加载的方阵 A (" << g_loaded_data.A.size() << "x" << g_loaded_data.A.size() << ")? (y/n): ";
@@ -301,7 +303,7 @@ void handle_determinant_gauss(){
         }
     }
     
-    if (matrix.empty()) { // 仍需手动输入
+    if (matrix.empty()) {
         cout << "请输入矩阵的行数或列数 (n): ";
         if (!(cin >> n)) { clear_input(); return; }
         cout << "请输入矩阵 (" << n << "x" << n << "):" << endl;
@@ -333,7 +335,7 @@ void handle_lu_decomposition(){
         }
     }
     
-    if (A.empty()) { // 仍需手动输入
+    if (A.empty()) {
         cout << "请输入矩阵的行数或列数 (n): ";
         if (!(cin >> n)) { clear_input(); return; }
         cout << "请输入矩阵 (" << n << "x" << n << "):" << endl;
@@ -369,7 +371,7 @@ void handle_lu_decomposition(){
     cout << endl;
 }
 
-int main() {
+int run_cli_app() {
     setlocale(LC_ALL, "");
     #ifdef _WIN32
     SetConsoleOutputCP(65001); // 设置输出编码为 UTF-8
@@ -386,7 +388,7 @@ int main() {
         cout << "================================\n";
         cout << "0. 退出\n";
         cout << "--- 数据源管理 ---\n";
-        cout << "9. 从 JSON 文件加载矩阵 (A/B)\n"; // 新增加载功能
+        cout << "9. 从 JSON 文件加载矩阵 (A/B)\n";
         cout << "--- 核心运算功能 ---\n";
         cout << "1. 矩阵乘法 (A * B)\n";
         cout << "2. 矩阵转置 (A^T)\n";
@@ -442,4 +444,33 @@ int main() {
     } while (choice != 0);
 
     return 0;
+}
+
+int main(int argc, char *argv[]) {
+    // 默认运行 CLI 模式
+    bool run_gui = false;
+    
+    // 检查参数，看用户是否要求启动 GUI
+    for (int i = 1; i < argc; ++i) {
+        // 如果用户输入了 "gui" 或 "-g" 等参数
+        if (std::string(argv[i]) == "gui" || std::string(argv[i]) == "-g") {
+            run_gui = true;
+            break;
+        }
+    }
+    
+    // 如果设置了启动 GUI 的标志，则运行 Qt GUI 模式
+    if (run_gui) {
+        QApplication a(argc, argv);
+        
+        // 创建并显示主窗口
+        MainWindow w;
+        w.show();
+        
+        // 进入 Qt 事件循环
+        return a.exec();
+    } 
+    
+    // 否则，运行原有的命令行程序 (这是默认行为)
+    return run_cli_app();
 }
