@@ -1,6 +1,5 @@
-; 安装脚本示例
 #define MyAppName "My Linear Algebra"
-#define MyAppVersion "1.0.0"
+#define MyAppVersion "0.2.0"
 #define MyAppPublisher "Richard Qin"
 #define MyAppURL "https://github.com/Richard-Qin-001/My-Linear-Algebra"
 #define MyAppExeName "MyLinearAlgebraApp.exe"
